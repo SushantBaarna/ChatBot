@@ -118,3 +118,34 @@ form.addEventListener('keyup', (e) => {
         handleSubmit(e);
     }
 })
+
+// Create a new instance of the SpeechRecognition object
+const recognition = new webkitSpeechRecognition();
+
+// Set some options for the recognition object
+recognition.continuous = true;
+recognition.interimResults = true;
+recognition.lang = 'en-US';
+
+// Add an event listener to handle results from the recognition object
+recognition.onresult = (event) => {
+  const transcript = event.results[event.results.length - 1][0].transcript;
+
+  // Update the text in the textarea with the recognized speech
+  document.querySelector('textarea[name="prompt"]').value = transcript;
+};
+
+// Start the recognition process when the user clicks a button
+let isListening = false;
+document.getElementById('voice-button').addEventListener('click', () => {
+  if (!isListening) {
+    recognition.start();
+    isListening = true;
+
+    // Stop the recognition process after 5 seconds
+    setTimeout(() => {
+      recognition.stop();
+      isListening = false;
+    }, 5000); // Change 5000 to the number of milliseconds you want to wait before stopping the recognition process
+  }
+});
